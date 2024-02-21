@@ -2,6 +2,7 @@ vim.cmd("set expandtab")
 vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
+vim.cmd("set number")
 vim.g.mapleader = " "
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -59,10 +60,13 @@ local plugins = {
       })
     end,
   },
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 }
 local opts = {}
 
 require("lazy").setup(plugins, opts)
+
+require("ibl").setup({})
 
 vim.keymap.set('n', '<leader>e', '<cmd>Ex<cr>')
 
