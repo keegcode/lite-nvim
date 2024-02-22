@@ -19,13 +19,18 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	{ "nvim-telescope/telescope.nvim", tag = '0.1.5', dependencies = { 'nvim-lua/plenary.nvim' } },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   {
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
+  },
+  {
+    "L3MON4D3/LuaSnip"
+  },
+  {
+    "saadparwaiz1/cmp_luasnip"
   },
   {
     "hrsh7th/cmp-nvim-lsp"
@@ -54,6 +59,7 @@ local plugins = {
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
+          { name = 'luasnip' },
         }, {
           { name = "buffer" },
         }),
@@ -61,6 +67,9 @@ local plugins = {
     end,
   },
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+  {
+    'projekt0n/github-nvim-theme',
+  }
 }
 local opts = {}
 
@@ -72,10 +81,10 @@ vim.keymap.set('n', '<leader>e', '<cmd>Ex<cr>')
 
 local builtin = require("telescope.builtin")
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fs', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.oldfiles, {})
-vim.keymap.set('n', '<leader>fgs', builtin.git_status, {})
+vim.keymap.set('n', '<leader>fg', builtin.git_status, {})
 
 local config = require("nvim-treesitter.configs")
 config.setup({
@@ -84,10 +93,10 @@ config.setup({
   indent = { enable = true },
 })
 
-require("catppuccin").setup({
-	flavour = "macchiato",
+require('github-theme').setup({
+  options = { transparent = true },
 })
-vim.cmd.colorscheme "catppuccin"
+vim.cmd('colorscheme github_dark_high_contrast')
 
 require("mason").setup({})
 require("mason-lspconfig").setup({
