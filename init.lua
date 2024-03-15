@@ -88,7 +88,18 @@ vim.keymap.set('n', '<leader>fg', builtin.git_status, {})
 
 local config = require("nvim-treesitter.configs")
 config.setup({
-  ensure_installed = {"lua", "javascript", "typescript", "rust", "go", "dockerfile"},
+  ensure_installed = {
+    "lua", 
+    "javascript", 
+    "typescript", 
+    "rust", 
+    "go", 
+    "dockerfile", 
+    "c", 
+    "cmake", 
+    "cpp",
+    "html",
+  },
   highlight = { enable = true },
   indent = { enable = true },
 })
@@ -100,7 +111,18 @@ vim.cmd('colorscheme github_dark_high_contrast')
 
 require("mason").setup({})
 require("mason-lspconfig").setup({
-  ensure_installed = {"lua_ls", "rust_analyzer", "dockerls", "eslint", "gopls", "jsonls", "tsserver"}
+  ensure_installed = {
+    "lua_ls", 
+    "rust_analyzer", 
+    "dockerls", 
+    "eslint", 
+    "gopls", 
+    "jsonls", 
+    "tsserver",
+    "clangd",
+    "cmake",
+    "html",
+  }
 })
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lspconfig = require("lspconfig")
@@ -122,4 +144,12 @@ lspconfig.gopls.setup {
 lspconfig.jsonls.setup {
   capabilities = capabilities  
 }
-
+lspconfig.clangd.setup {
+  capabilities = capabilities  
+}
+lspconfig.cmake.setup {
+  capabilities = capabilities  
+}
+lspconfig.html.setup {
+  capabilities = capabilities  
+}
