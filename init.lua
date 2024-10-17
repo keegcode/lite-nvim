@@ -6,6 +6,7 @@ vim.cmd("set number")
 vim.g.mapleader = " "
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -16,10 +17,11 @@ if not vim.loop.fs_stat(lazypath) then
     lazypath,
   })
 end
+
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-	{ "nvim-telescope/telescope.nvim", tag = '0.1.5', dependencies = { 'nvim-lua/plenary.nvim' } },
+	{ "nvim-telescope/telescope.nvim", tag = "0.1.5", dependencies = { "nvim-lua/plenary.nvim" } },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   {
     "williamboman/mason.nvim",
@@ -59,7 +61,7 @@ local plugins = {
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = 'luasnip' },
+          { name = "luasnip" },
         }, {
           { name = "buffer" },
         }),
@@ -68,25 +70,37 @@ local plugins = {
   },
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
   {
-    'projekt0n/github-nvim-theme',
+    "projekt0n/github-nvim-theme",
+  },
+  {
+    "jesseduffield/lazygit",
+  },
+  {
+    "windwp/nvim-ts-autotag",
+  },
+  {
+    "prettier/vim-prettier",
   }
 }
+
 local opts = {}
 
 require("lazy").setup(plugins, opts)
 
 require("ibl").setup({})
 
-vim.keymap.set('n', '<leader>e', '<cmd>Ex<cr>')
+vim.keymap.set("n", "<leader>e", "<cmd>Ex<cr>")
 
 local builtin = require("telescope.builtin")
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fs', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>fh', builtin.oldfiles, {})
-vim.keymap.set('n', '<leader>fg', builtin.git_status, {})
+
+vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
+vim.keymap.set("n", "<leader>fs", builtin.live_grep, {})
+vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
+vim.keymap.set("n", "<leader>fh", builtin.oldfiles, {})
+vim.keymap.set("n", "<leader>fg", builtin.git_status, {})
 
 local config = require("nvim-treesitter.configs")
+
 config.setup({
   ensure_installed = {
     "lua", 
@@ -99,17 +113,20 @@ config.setup({
     "cmake", 
     "cpp",
     "html",
+    "tsx",
   },
   highlight = { enable = true },
   indent = { enable = true },
 })
 
-require('github-theme').setup({
+require("github-theme").setup({
   options = { transparent = true },
 })
-vim.cmd('colorscheme github_dark_high_contrast')
+
+vim.cmd("colorscheme github_dark_high_contrast")
 
 require("mason").setup({})
+
 require("mason-lspconfig").setup({
   ensure_installed = {
     "lua_ls", 
@@ -118,38 +135,91 @@ require("mason-lspconfig").setup({
     "eslint", 
     "gopls", 
     "jsonls", 
-    "tsserver",
     "clangd",
     "cmake",
     "html",
+    "tailwindcss",
+    "unocss",
+    "ts_ls"
   }
 })
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
 local lspconfig = require("lspconfig")
-lspconfig.tsserver.setup {
-  capabilities = capabilities  
-}
+
 lspconfig.rust_analyzer.setup {
   capabilities = capabilities  
 }
+
 lspconfig.eslint.setup {
   capabilities = capabilities  
 }
+
 lspconfig.dockerls.setup {
   capabilities = capabilities  
 }
+
 lspconfig.gopls.setup {
   capabilities = capabilities  
 }
+
 lspconfig.jsonls.setup {
   capabilities = capabilities  
 }
+
 lspconfig.clangd.setup {
   capabilities = capabilities  
 }
+
 lspconfig.cmake.setup {
   capabilities = capabilities  
 }
+
 lspconfig.html.setup {
   capabilities = capabilities  
 }
+
+lspconfig.tailwindcss.setup {
+  capabilities = capabilities  
+}
+
+lspconfig.unocss.setup {
+  capabilities = capabilities  
+}
+
+lspconfig.ts_ls.setup {
+  capabilities = capabilities  
+}
+
+require("nvim-ts-autotag").setup({
+  opts = {
+    enable_close = true,
+    enable_rename = true, 
+    enable_close_on_slash = false 
+  },
+  per_filetype = {
+    ["html"] = {
+      enable_close = true 
+    },
+    ["tsx"] = {
+      enable_close = true
+    },
+    ["jsx"] = {
+      enable_close = true 
+    },
+    ["js"] = {
+      enable_close = true 
+    },
+    ["ts"] = {
+      enable_close = true 
+    }
+  }
+})
+
+vim.cmd([[
+  let g:prettier#autoformat_require_pragma = 0 
+  let g:prettier#exec_cmd_async = 1
+  let g:prettier#autoformat_config_files = [".prettierrc", ".prettierrc.config.mjs", ".prettierrc.mjs", ".prettierrc.js", ".prettierrc.json", ".prettierrc.yaml", ".prettierrc.yml", ".prettierrc.toml", "prettier.config.js", "prettier.config.cjs", ".prettierrc.cjs"]
+  let g:prettier#autoformat_config_present = 1
+]])
