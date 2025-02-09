@@ -80,7 +80,62 @@ local plugins = {
   },
   {
     "prettier/vim-prettier",
-  }
+  },
+  {
+    "folke/trouble.nvim",
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = "Trouble",
+    keys = {
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      {
+        "<leader>cs",
+        "<cmd>Trouble symbols toggle focus=false<cr>",
+        desc = "Symbols (Trouble)",
+      },
+      {
+        "<leader>cl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP Definitions / references / ... (Trouble)",
+      },
+      {
+        "<leader>xL",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Location List (Trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<cmd>Trouble qflist toggle<cr>",
+        desc = "Quickfix List (Trouble)",
+      },
+    },
+  },
+  {
+    "David-Kunz/gen.nvim",
+    opts = {
+        model = "deepseek-r1:32b", -- The default model to use.
+        quit_map = "q", -- set keymap to close the response window
+        display_mode = "split", -- The display mode. Can be "float" or "split" or "horizontal-split".
+        show_prompt = true, -- Shows the prompt submitted to Ollama. Can be true (3 lines) or "full".
+        
+        show_model = true, -- Displays which model you are using at the beginning of your chat session.
+        no_auto_close = true, -- Never closes the window automatically.
+        init = function(options) pcall(io.popen, "ollama serve > /dev/null 2>&1 &") end,
+        -- Function to initialize Ollama
+        command = function(options)
+            local body = {model = options.model, temperature = 0.0, stream = true}
+            return "curl --silent --no-buffer -X POST http://" .. options.host .. ":" .. options.port .. "/api/chat -d $body"
+        end,
+    }
+},
 }
 
 local opts = {}
@@ -114,6 +169,8 @@ config.setup({
     "cpp",
     "html",
     "tsx",
+    "yaml",
+    "glsl"
   },
   highlight = { enable = true },
   indent = { enable = true },
@@ -140,12 +197,12 @@ require("mason-lspconfig").setup({
     "html",
     "tailwindcss",
     "unocss",
-    "ts_ls"
+    "ts_ls",
+    "glsl_analyzer"
   }
 })
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
 local lspconfig = require("lspconfig")
 
 lspconfig.rust_analyzer.setup {
@@ -192,6 +249,10 @@ lspconfig.ts_ls.setup {
   capabilities = capabilities  
 }
 
+lspconfig.glsl_analyzer.setup {
+  capabilities = capabilities  
+}
+
 require("nvim-ts-autotag").setup({
   opts = {
     enable_close = true,
@@ -218,8 +279,6 @@ require("nvim-ts-autotag").setup({
 })
 
 vim.cmd([[
-  let g:prettier#autoformat_require_pragma = 0 
   let g:prettier#exec_cmd_async = 1
-  let g:prettier#autoformat_config_files = [".prettierrc", ".prettierrc.config.mjs", ".prettierrc.mjs", ".prettierrc.js", ".prettierrc.json", ".prettierrc.yaml", ".prettierrc.yml", ".prettierrc.toml", "prettier.config.js", "prettier.config.cjs", ".prettierrc.cjs"]
-  let g:prettier#autoformat_config_present = 1
+  let g:prettier#autoformat = 0
 ]])
