@@ -211,7 +211,7 @@ return {
         html = {},
         tailwindcss = {},
         unocss = {},
-        ts_ls = {},
+        tsserver = {},
         glsl_analyzer = {},
       }
 
